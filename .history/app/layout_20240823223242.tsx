@@ -18,10 +18,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-    <body className={`${poppins.className} text-state-700`}>
+      <body className={poppins.className}>
         <div className='flex flex-col min-h-screen'>
           <NavBar/>
-          <main className='flex-grow bg-[#f5f5f5]'>{children}</main>
+          <main className='flex-grow'>{children}</main>
           <Footer/>
         </div>
         </body>

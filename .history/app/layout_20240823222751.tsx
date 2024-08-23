@@ -1,8 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
-import NavBar from './components/nav/NavBar'
-import Footer from './components/footer/Footer'
 
 const poppins = Poppins({ subsets: ['latin'],weight:['400','700'] })
 
@@ -18,13 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-    <body className={`${poppins.className} text-state-700`}>
-        <div className='flex flex-col min-h-screen'>
-          <NavBar/>
-          <main className='flex-grow bg-[#f5f5f5]'>{children}</main>
-          <Footer/>
-        </div>
-        </body>
+      <body className={poppins.className}><main>{children}</main></body>
     </html>
   )
 }
