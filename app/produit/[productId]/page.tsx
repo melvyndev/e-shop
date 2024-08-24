@@ -1,3 +1,6 @@
+import Container from "@/app/components/Container";
+import ProductDetails from "../ProductDetails";
+
 interface idParams{
         productId:string
 
@@ -6,9 +9,12 @@ interface idParams{
 const Product = ({params}: {params: idParams})=>{
 
     return (    
-        <div> 
-            <h1>Product {params.productId}</h1>
-        </div> 
+      <div>
+        <Container>
+            <ProductDetails />
+        </Container>
+      </div>
+                                            
     );
 }
 
