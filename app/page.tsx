@@ -1,4 +1,4 @@
-import { products } from "@/utils/product"; // Assuming products is an array of objects
+import { products } from "@/utils/products";
 import Container from "./components/Container";
 import HomeBanner from "./components/nav/HomeBanner";
 import Card from "./components/Card";
