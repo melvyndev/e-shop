@@ -1,11 +1,14 @@
 'use client';
 
 import { Rating } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SetColor from "../components/product/SetColor";
 import SetQuantity from "../components/product/SetQuantity";
 import Button from "../components/product/Button";
 import ProductImage from "../components/product/ProductImage";
+import ListRating from "../components/product/ListRating";
+import { useCart } from "../hooks/useCart";
+import { useRouter } from "next/navigation"; // Utiliser useRouter pour la navigation
 
 interface ProductDetailsProps {
   product: any;
@@ -28,45 +31,59 @@ export type CartProductType = {
 };
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
+  const { handleProductToCart, cartProducts } = useCart();
+  const [isProductInCart, setIsProductInCart] = useState(false);
+  const router = useRouter(); 
+
   const productRating =
     product?.reviews?.reduce((acc: number, item: any) => acc + item.rating, 0) /
       product?.reviews?.length || 0;
 
-  const [cartProducts, setCartProducts] = useState<CartProductType>({
+  const [selectedProduct, setSelectedProduct] = useState<CartProductType>({
     id: product.id,
     name: product.name,
     price: product.price,
     category: product.category,
     brand: product.brand,
-    selectedImg: { ...product.images[0] }, // On initialise avec la première image par défaut
+    selectedImg: { ...product.images[0] }, 
     quantity: 1,
   });
 
-  console.log(cartProducts);
+  useEffect(() => {
+    setIsProductInCart(false);
 
-  const handlColorSelect = useCallback(
+    if (cartProducts) {
+      const existingIndex = cartProducts.findIndex((item) => item.id === product.id);
+
+      if (existingIndex !== -1) {
+        setIsProductInCart(true);
+      }
+    }
+  }, [cartProducts, product.id]);
+
+  const handleColorSelect = useCallback(
     (value: SelectedImgType) => {
-      setCartProducts((prev) => {
+      setSelectedProduct((prev) => {
         return { ...prev, selectedImg: value };
       });
     },
-    [cartProducts.selectedImg]
+    [selectedProduct.selectedImg]
   );
 
-  const handleQtyIncrease= useCallback(()=>{
-        setCartProducts((prev=>{
-         return{...prev,quantity:prev.quantity+1}}))
-  },[cartProducts.quantity]);
+  const handleQtyIncrease = useCallback(() => {
+    setSelectedProduct((prev) => {
+      return { ...prev, quantity: prev.quantity + 1 };
+    });
+  }, [selectedProduct.quantity]);
 
-
-  const handleQtyDecrease= useCallback(()=>{
-    if(cartProducts.quantity<=1){
+  const handleQtyDecrease = useCallback(() => {
+    if (selectedProduct.quantity <= 1) {
       return;
     }
-    setCartProducts((prev=>{
-      return{...prev,quantity:prev.quantity-1}}))
-  },[cartProducts.quantity]);
-
+    setSelectedProduct((prev) => {
+      return { ...prev, quantity: prev.quantity - 1 };
+    });
+  }, [selectedProduct.quantity]);
 
   return (
     <div>
@@ -74,13 +91,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-0">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-16 mx-auto max-md:px-2 items-center justify-center align-middle">
             <div className="col-span-2 md:col-span-2 lg:col-span-1 max-md:mb-6">
-               <ProductImage cartProduct={product} product={product} handlColorSelect={handlColorSelect}/>
+              <ProductImage
+                cartProduct={product}
+                product={product}
+                handlColorSelect={handleColorSelect}
+              />
             </div>
 
-           <div className="img col-span-4 md:col-span-3 lg:col-span-2 max-md:mb-6">
+            <div className="img col-span-4 md:col-span-3 lg:col-span-2 max-md:mb-6">
               <div className="img-box h-full max-lg:mx-auto">
                 <img
-                  src={cartProducts.selectedImg.image}
+                  src={selectedProduct.selectedImg.image}
                   alt="Product Image"
                   className="max-lg:mx-auto lg:ml-auto h-full"
                 />
@@ -130,34 +151,44 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                     </span>
                   </li>
                 </ul>
-                <p className="text-gray-900 text-lg leading-8 font-medium mb-4">
-                  Taille
-                </p>
+                <SetColor
+                      cartProduct={selectedProduct}
+                      images={product.images}
+                      handlColorSelect={handleColorSelect}
+                    />
                 <div className="w-full pb-8 border-b border-gray-100 flex-wrap">
-                  <div className="grid grid-cols-3 min-[400px]:grid-cols-5 gap-3 max-w-md">
-                    <button className="bg-white text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-100 hover:border-gray-300">
-                      S
-                    </button>
-                    <button className="bg-white text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-100 hover:border-gray-300">
-                      M
-                    </button>
-                    <button className="bg-white text-center py-1.5 px-6 w-full font-semibold text-lg leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-100 hover:border-gray-300">
-                      L
-                    </button>
-                  </div>
-                </div>
-                <div className="w-full pb-8 border-b border-gray-100 flex-wrap">
-                  <SetColor
-                    cartProduct={cartProducts} // Passez `cartProducts` ici
-                    images={product.images}
-                    handlColorSelect={handlColorSelect}
-                  />
+                
                 </div>
                 <div className="grid grid-cols-1 w-[300px] gap-3 py-8">
-                  <SetQuantity cartProduct={cartProducts} handleQtyIncrease={handleQtyIncrease} handleQtyDecrease={handleQtyDecrease}/>
-                  <Button label="Ajouter au panier" onClick={() => {console.log("tu")}} />
+                  <SetQuantity
+                    cartProduct={selectedProduct} 
+                    handleQtyIncrease={handleQtyIncrease}
+                    handleQtyDecrease={handleQtyDecrease}
+                  />
+                    {isProductInCart ? (
+                    <>
+                      <p className="text-gray-900 text-lg leading-8 font-medium">
+                        Produit ajouté au panier
+                      </p>
+                      <div>
+                        <Button
+                          label="Aller au panier"
+                          onClick={() => router.push("/panier")} 
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <Button
+                    label="Ajouter au panier"
+                    onClick={() => handleProductToCart(selectedProduct)} 
+                  />
+                  )}
+                  
                 </div>
               </div>
+            </div>
+            <div className="col-span-6">
+              <ListRating product={product} />
             </div>
           </div>
         </div>

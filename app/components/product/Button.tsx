@@ -12,7 +12,7 @@ const Button:React.FC<ButtonProps> = (
 ) => {
     return (
 
-        <button className="group py-4 px-5 rounded-full bg-indigo-50 text-indigo-600 font-semibold text-lg w-full flex items-center justify-center gap-2 transition-all duration-500 hover:bg-indigo-100">
+        <button onClick={onClick} className="group py-4 px-5 rounded-full bg-indigo-50 text-indigo-600 font-semibold text-lg w-full flex items-center justify-center gap-2 transition-all duration-500 hover:bg-indigo-100">
         <svg
           className="stroke-indigo-600"
           width="22"
