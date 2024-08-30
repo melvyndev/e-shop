@@ -1,6 +1,6 @@
 import Container from "@/app/components/Container";
 import ProductDetails from "../ProductDetails";
-import { product } from "@/utils/product";
+import { products } from "@/utils/products";
 
 interface idParams{
         productId:string
@@ -8,7 +8,7 @@ interface idParams{
 }
 
 const Product = ({params}: {params: idParams})=>{
-
+ const product = products.find(((product)=> product.id === params.productId));
     return (    
       <div>
         <Container>

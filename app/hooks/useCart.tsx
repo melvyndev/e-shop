@@ -128,7 +128,7 @@ export const CartContextProvider = (props: Props) => {
             const totalQty = parsedCart.reduce((acc: number, product: CartProductType) => acc + product.quantity, 0);
             setCartTotalQty(totalQty);
         }
-    }, []);
+    }, [cartProducts]);
 
 
 

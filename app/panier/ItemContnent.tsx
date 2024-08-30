@@ -15,7 +15,7 @@ const ItemContent:React.FC<ItemContentProps> = ({item}) => {
     return (
         <div className="flex flex-col md:flex-row border-b border-gray-400 py-4 ">
         <div className="flex-shrink-0 ">
-            <img src="https://picsum.photos/id/237/150/150" alt="Image produit" className="w-32 h-32 object-cover"/>
+            <img src={item.selectedImg.image} alt="Image produit" className="w-32 h-32 object-cover"/>
         </div>
         <div className="mt-4 md:mt-0 md:ml-6">
             <h2 className="text-lg font-bold">{item.name}</h2>

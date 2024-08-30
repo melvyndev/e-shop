@@ -7,7 +7,7 @@ import ItemContent from "./ItemContnent";
 
 const CartClient = () => {
 
-    const {cartProducts,handleCartClear} = useCart()
+    const {cartProducts,handleCartClear,cartTotalQty} = useCart()
 
     if(!cartProducts || cartProducts.length === 0) return <div className="flex justify-center items-center"><span className="text-2xl font-bold">Panier vide</span></div>
     return (
@@ -37,7 +37,11 @@ const CartClient = () => {
         </div>
         <div>
             <span className="text-gray-600 mr-4">Sous-total :</span>
-            <span className="text-xl font-bold">{cartProducts.reduce((acc:number, item:CartProductType) => acc + item.price * item.quantity, 0)} €</span>
+            <span className="text-xl font-bold">
+                {cartProducts
+                    .reduce((acc: number, item: CartProductType) => acc + item.price * item.quantity, 0)
+                    .toFixed(2)} € 
+            </span> 
         </div>
           </div>
 </div>
