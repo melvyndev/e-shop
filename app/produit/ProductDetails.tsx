@@ -23,6 +23,7 @@ export type SelectedImgType = {
 export type CartProductType = {
   id: string;
   name: string;
+  description: string;
   price: number;
   category: string;
   brand: string;
@@ -42,6 +43,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [selectedProduct, setSelectedProduct] = useState<CartProductType>({
     id: product.id,
     name: product.name,
+    description: product.description,
     price: product.price,
     category: product.category,
     brand: product.brand,
