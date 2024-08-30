@@ -8,6 +8,11 @@ type CartContextType = {
     cartProducts: CartProductType[] | null;
     handleProductToCart: (product: CartProductType) => void;
     handleRemoveProduct: (product: CartProductType) => void;
+    handleCartQtyIncrease: (product: CartProductType) => void;
+    handleCartQtyDecrease: (product: CartProductType) => void;
+    handleCartClear: () => void;
+
+
 };
 
 export const CartContext = createContext<CartContextType | null>(null);
@@ -65,6 +70,54 @@ export const CartContextProvider = (props: Props) => {
         }
     }, [cartProducts]);
 
+    const handleCartQtyIncrease = useCallback((product: CartProductType) => {
+
+        let updatedCart;
+
+        if(product.quantity === 99){
+            return toast.error('Quantité maximale atteinte !');
+        }
+
+            if(cartProducts){
+                updatedCart = [...cartProducts];
+                const existingCart = updatedCart.findIndex(item => item.id === product.id);
+            
+            if(existingCart > -1){
+                updatedCart[existingCart].quantity = ++updatedCart[existingCart].quantity;
+            }
+            setCartProducts(updatedCart);
+            localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
+        }
+       
+    }, [cartProducts]);
+
+    const handleCartQtyDecrease = useCallback((product: CartProductType) => {
+
+        let updatedCart;
+
+        if(product.quantity === 1){
+            return toast.error('Quantité minimale atteinte !');
+        }
+
+            if(cartProducts){
+                updatedCart = [...cartProducts];
+                const existingCart = updatedCart.findIndex(item => item.id === product.id);
+            
+            if(existingCart > -1){
+                updatedCart[existingCart].quantity = updatedCart[existingCart].quantity-1;
+            }
+            setCartProducts(updatedCart);
+            localStorage.setItem("eShopCartItems", JSON.stringify(updatedCart));
+        }
+       
+    }, [cartProducts]);
+
+    const handleCartClear = useCallback(() => {
+        setCartProducts([]);
+        localStorage.removeItem("eShopCartItems");
+    }, [cartProducts]);
+    
+
     useEffect(() => {
         const storedCart = localStorage.getItem("eShopCartItems");
         if (storedCart) {
@@ -77,11 +130,16 @@ export const CartContextProvider = (props: Props) => {
         }
     }, []);
 
+
+
     const value = {
         cartTotalQty,
         cartProducts,
         handleProductToCart,
-        handleRemoveProduct,  // Include the remove product function in context
+        handleRemoveProduct,  
+        handleCartQtyIncrease,
+        handleCartQtyDecrease,
+        handleCartClear
     };
 
     return <CartContext.Provider value={value} {...props} />;

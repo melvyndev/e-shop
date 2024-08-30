@@ -8,7 +8,6 @@ interface idParams{
 }
 
 const Product = ({params}: {params: idParams})=>{
-  console.log(params);
 
     return (    
       <div>

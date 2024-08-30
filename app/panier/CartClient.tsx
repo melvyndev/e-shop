@@ -3,12 +3,13 @@
 import SetQuantity from "../components/product/SetQuantity";
 import { useCart } from "../hooks/useCart";
 import { CartProductType } from "../produit/ProductDetails";
+import ItemContent from "./ItemContnent";
 
 const CartClient = () => {
 
-    const {cartProducts} = useCart()
+    const {cartProducts,handleCartClear} = useCart()
 
-    if(!cartProducts || cartProducts.length === 0) return <div><span>Panier vide</span></div>
+    if(!cartProducts || cartProducts.length === 0) return <div className="flex justify-center items-center"><span className="text-2xl font-bold">Panier vide</span></div>
     return (
         <div>
           <div className="container mx-auto px-4 py-8">
@@ -30,10 +31,15 @@ const CartClient = () => {
        
        
     </div>
-    <div className="flex justify-end items-center mt-8">
-        <span className="text-gray-600 mr-4">Sous-total :</span>
-        <span className="text-xl font-bold">{cartProducts.reduce((acc:number, item:CartProductType) => acc + item.price * item.quantity, 0)} €</span>
-    </div>
+    <div className="flex justify-between items-center mt-8">
+        <div>
+            <span onClick={()=>handleCartClear()} className="bg-red-500 text-white px-4 py-2 rounded-lg ml-2">Vider le panier</span>
+        </div>
+        <div>
+            <span className="text-gray-600 mr-4">Sous-total :</span>
+            <span className="text-xl font-bold">{cartProducts.reduce((acc:number, item:CartProductType) => acc + item.price * item.quantity, 0)} €</span>
+        </div>
+          </div>
 </div>
         </div>
     );
